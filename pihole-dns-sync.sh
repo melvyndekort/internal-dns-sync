@@ -9,39 +9,27 @@ SSH_KEY="/root/.ssh/deploy-key"
 
 export GIT_SSH_COMMAND="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
 
-# Clone repo if it doesn't exist
+# Clone or update repo
 if [ ! -d "$REPO_DIR" ]; then
     echo "Cloning repository..."
     git clone "$REPO_URL" "$REPO_DIR"
-    FIRST_RUN=true
 else
-    FIRST_RUN=false
+    echo "Updating repository..."
+    cd "$REPO_DIR"
+    git pull origin main
 fi
 
 cd "$REPO_DIR"
 
-# Pull latest changes
-git fetch origin
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse @{u})
+# Always copy the file
+echo "Deploying DNS entries..."
 
-if [ "$LOCAL" != "$REMOTE" ] || [ "$FIRST_RUN" = true ]; then
-    if [ "$FIRST_RUN" = true ]; then
-        echo "First run, deploying DNS entries..."
-    else
-        echo "Changes detected, updating DNS entries..."
-        git pull origin main
-    fi
-    
-    # Backup current DNS
-    if [ -f "$PIHOLE_DNS" ]; then
-        cp "$PIHOLE_DNS" "$PIHOLE_DNS.backup.$(date +%Y%m%d-%H%M%S)"
-    fi
-    
-    # Copy new DNS entries
-    cp "$DNS_FILE" "$PIHOLE_DNS"
-    
-    echo "DNS entries updated - PiHole will reload automatically"
-else
-    echo "No changes detected"
+# Backup current DNS
+if [ -f "$PIHOLE_DNS" ]; then
+    cp "$PIHOLE_DNS" "$PIHOLE_DNS.backup.$(date +%Y%m%d-%H%M%S)"
 fi
+
+# Copy new DNS entries
+cp "$DNS_FILE" "$PIHOLE_DNS"
+
+echo "DNS entries updated - PiHole will reload automatically"
