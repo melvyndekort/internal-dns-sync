@@ -11,6 +11,10 @@ def load_dns_config(repo_dir):
     with open(config_file, 'r', encoding='utf-8') as f:
         data = yaml.safe_load(f)
     
+    # Handle empty file
+    if data is None:
+        data = {}
+    
     hosts = {}
     for entry in data.get('hosts', []):
         hosts[f"{entry['ip']} {entry['domain']}"] = (entry['ip'], entry['domain'])

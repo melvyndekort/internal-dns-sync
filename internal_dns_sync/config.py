@@ -11,6 +11,10 @@ def get_config():
     with open(config_file, 'r', encoding='utf-8') as f:
         cfg = yaml.safe_load(f)
     
+    # Handle empty file
+    if cfg is None:
+        cfg = {}
+    
     # Set defaults
     cfg.setdefault('repo_url', 'git@github.com:melvyndekort/internal-dns.git')
     cfg.setdefault('ssh_key', '/config/deploy-key')
