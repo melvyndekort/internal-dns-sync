@@ -1,0 +1,5 @@
+piholes:
+  - url: http://10.204.10.2
+    password: changeme1
+  - url: http://10.204.10.3
+    password: changeme2

@@ -1,0 +1,25 @@
+[project]
+name = "internal-dns-sync"
+version = "0.1.0"
+description = "Sync internal DNS entries to PiHole via API"
+authors = [{name = "Melvyn de Kort", email = "melvyn@mdekort.nl"}]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.32",
+    "tomli>=2.2",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "pytest-cov>=7.0",
+    "pylint>=3.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["internal_dns_sync"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

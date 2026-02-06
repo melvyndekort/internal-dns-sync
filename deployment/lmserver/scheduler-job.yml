@@ -1,0 +1,7 @@
+  - name: 'internal-dns-sync'
+    jobtype: 'run'
+    schedule: '*/5 * * * *'
+    image: 'ghcr.io/melvyndekort/internal-dns-sync:latest'
+    volumes:
+      - '/var/mnt/storage/docker/internal-dns-sync:/config:ro'
+      - '/etc/internal-dns/deploy-key:/root/.ssh/deploy-key:ro'
