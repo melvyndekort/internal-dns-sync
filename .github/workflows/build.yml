@@ -7,7 +7,8 @@ on:
       - main
     paths:
       - 'Dockerfile'
-      - 'pihole-dns-sync.sh'
+      - 'internal_dns_sync/**'
+      - 'pyproject.toml'
       - '.github/workflows/build.yml'
 
 jobs:

@@ -21,8 +21,8 @@ updates:
     reviewers:
       - "melvyndekort"
 
-  - package-ecosystem: "cargo"
-    directory: "/toml-merge"
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "daily"
     rebase-strategy: "auto"
