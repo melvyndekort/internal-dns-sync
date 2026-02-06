@@ -34,7 +34,7 @@ Optional settings (with defaults):
 ### Volumes
 
 - `/config/config.yml` - Configuration file (required)
-- `/root/.ssh/deploy-key` - SSH deploy key for accessing the internal-dns repository (read-only)
+- `/config/deploy-key` - SSH deploy key for accessing the internal-dns repository (read-only)
 
 ## Deployment
 
