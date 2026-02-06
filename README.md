@@ -23,8 +23,8 @@ The container syncs DNS entries from the private `internal-dns` repository to Pi
 ## Deployment
 
 See the `deployment/` directory for server-specific configurations:
-- `pihole-1/` - Fedora IoT with podman + systemd timer (every 5 minutes)
-- `lmserver/` - Fedora CoreOS with docker + scheduler (every 5 minutes)
+- `pihole-1/` - Fedora IoT with podman + systemd timer (every 5 minutes). Checks for `.reload-required` flag and restarts pihole container when DNS changes are detected.
+- `lmserver/` - Fedora CoreOS with docker + scheduler (every 5 minutes). Includes a separate job to check for the flag file and restart pihole when needed.
 
 ## How It Works
 
@@ -32,7 +32,8 @@ See the `deployment/` directory for server-specific configurations:
 2. Reads `dns-config.toml` from the repository
 3. Updates `dns.hosts` and `dns.cnameRecords` in `/etc/pihole/pihole.toml`
 4. Preserves all comments, formatting, and other PiHole settings
-5. PiHole automatically reloads the DNS entries
+5. If changes are detected, creates a `.reload-required` flag file
+6. The deployment checks for this flag and restarts PiHole to apply changes
 
 ## Technical Details
 

@@ -21,6 +21,7 @@ ExecStart=/usr/bin/podman run \
   -v /etc/internal-dns/deploy-key:/root/.ssh/deploy-key:ro,Z \
   --label io.containers.autoupdate=registry \
   ghcr.io/melvyndekort/internal-dns-sync:latest
+ExecStartPost=/bin/sh -c 'if [ -f /var/containers/pihole/.reload-required ]; then rm /var/containers/pihole/.reload-required && /usr/bin/podman restart pihole; fi'
 ExecStopPost=/usr/bin/podman rm -f --ignore -t 10 --cidfile=%t/%n.ctr-id
 
 [Install]

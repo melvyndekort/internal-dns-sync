@@ -23,12 +23,22 @@ cd "$REPO_DIR"
 
 echo "Deploying DNS entries to pihole.toml..."
 
-# Backup current config if it exists
+# Calculate checksum before changes
+CHECKSUM_BEFORE=""
 if [ -f "$PIHOLE_TOML" ]; then
+    CHECKSUM_BEFORE=$(sha256sum "$PIHOLE_TOML" | cut -d' ' -f1)
     cp "$PIHOLE_TOML" "$PIHOLE_TOML.backup.$(date +%Y%m%d-%H%M%S)"
 fi
 
 # Use Rust toml-merge to update DNS entries while preserving comments
 toml-merge
 
-echo "DNS entries updated in pihole.toml - PiHole will reload automatically"
+# Calculate checksum after changes
+CHECKSUM_AFTER=$(sha256sum "$PIHOLE_TOML" | cut -d' ' -f1)
+
+if [ "$CHECKSUM_BEFORE" != "$CHECKSUM_AFTER" ]; then
+    echo "DNS entries changed"
+    touch /etc/pihole/.reload-required
+else
+    echo "No changes detected"
+fi
