@@ -18,7 +18,7 @@ ExecStart=/usr/bin/podman run \
   --pull=newer \
   --name=internal-dns-sync \
   -v /var/containers/pihole/hosts:/etc/pihole/hosts:Z \
-  -v /root/.ssh/pihole-1-deploy-key:/root/.ssh/deploy-key:ro,Z \
+  -v /etc/internal-dns/deploy-key:/root/.ssh/deploy-key:ro,Z \
   --label io.containers.autoupdate=registry \
   ghcr.io/melvyndekort/internal-dns-sync:latest
 ExecStopPost=/usr/bin/podman rm -f --ignore -t 10 --cidfile=%t/%n.ctr-id

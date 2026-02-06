@@ -4,6 +4,6 @@
     restart: "no"
     volumes:
       - /var/mnt/storage/docker/pihole-pihole/hosts:/etc/pihole/hosts
-      - /root/.ssh/lmserver-deploy-key:/root/.ssh/deploy-key:ro
+      - /etc/internal-dns/deploy-key:/root/.ssh/deploy-key:ro
     environment:
       - TZ=Europe/Amsterdam
