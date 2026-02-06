@@ -31,6 +31,8 @@ Optional settings (with defaults):
 - `repo_url`: `git@github.com:melvyndekort/internal-dns.git`
 - `ssh_key`: `/root/.ssh/deploy-key`
 
+**Important:** PiHole app passwords must have `app_sudo = true` enabled in `/etc/pihole/pihole.toml` to allow DNS configuration changes via the API.
+
 ### Volumes
 
 - `/config/config.yml` - Configuration file (required)
@@ -50,5 +52,5 @@ See `deployment/lmserver/` for scheduler job configuration and example config fi
 2. Reads `dns-config.toml` from the repository
 3. Authenticates with PiHole API
 4. Fetches current DNS hosts and CNAME records
-5. Syncs changes (adds new entries, removes old ones)
+5. Replaces the entire DNS configuration with the desired state
 6. Changes apply immediately via API - no restart needed
