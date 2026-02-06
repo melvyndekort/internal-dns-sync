@@ -11,7 +11,11 @@ export GIT_SSH_COMMAND="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
 
 # Clone repo if it doesn't exist
 if [ ! -d "$REPO_DIR" ]; then
+    echo "Cloning repository..."
     git clone "$REPO_URL" "$REPO_DIR"
+    FIRST_RUN=true
+else
+    FIRST_RUN=false
 fi
 
 cd "$REPO_DIR"
@@ -21,9 +25,13 @@ git fetch origin
 LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse @{u})
 
-if [ "$LOCAL" != "$REMOTE" ]; then
-    echo "Changes detected, updating DNS entries..."
-    git pull origin main
+if [ "$LOCAL" != "$REMOTE" ] || [ "$FIRST_RUN" = true ]; then
+    if [ "$FIRST_RUN" = true ]; then
+        echo "First run, deploying DNS entries..."
+    else
+        echo "Changes detected, updating DNS entries..."
+        git pull origin main
+    fi
     
     # Backup current DNS
     if [ -f "$PIHOLE_DNS" ]; then
