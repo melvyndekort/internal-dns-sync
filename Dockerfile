@@ -4,6 +4,7 @@ WORKDIR /build
 RUN apk add --no-cache musl-dev
 
 COPY toml-merge/ .
+RUN cargo test --release
 RUN cargo build --release
 
 FROM alpine:latest
