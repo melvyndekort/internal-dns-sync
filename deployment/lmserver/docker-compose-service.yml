@@ -1,0 +1,9 @@
+  internal-dns-sync:
+    image: ghcr.io/melvyndekort/internal-dns-sync:latest
+    container_name: internal-dns-sync
+    restart: "no"
+    volumes:
+      - /var/mnt/storage/docker/pihole-pihole/hosts:/etc/pihole/hosts
+      - /root/.ssh/lmserver-deploy-key:/root/.ssh/deploy-key:ro
+    environment:
+      - TZ=Europe/Amsterdam

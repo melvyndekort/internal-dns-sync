@@ -1,0 +1,14 @@
+[Unit]
+Description=Internal DNS Sync
+After=network-online.target pihole.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/podman run --rm \
+  -v /var/containers/pihole/hosts:/etc/pihole/hosts:Z \
+  -v /root/.ssh/pihole-1-deploy-key:/root/.ssh/deploy-key:ro,Z \
+  ghcr.io/melvyndekort/internal-dns-sync:latest
+
+[Install]
+WantedBy=multi-user.target
