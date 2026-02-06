@@ -7,22 +7,6 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 
-def sync_entries(api, current, desired, delete_func, add_func):
-    current_set = set(current)
-    desired_set = set(desired.keys())
-    
-    to_delete = current_set - desired_set
-    to_add = desired_set - current_set
-    
-    for entry in to_delete:
-        delete_func(entry)
-    
-    for entry in to_add:
-        add_func(*desired[entry])
-    
-    return len(to_delete) + len(to_add)
-
-
 def sync_pihole(pihole_config, desired_hosts, desired_cnames):
     logger.info('Syncing PiHole at %s', pihole_config['url'])
     
@@ -32,9 +16,22 @@ def sync_pihole(pihole_config, desired_hosts, desired_cnames):
     current_hosts = api.get_hosts()
     current_cnames = api.get_cnames()
     
+    # Build desired hosts list
+    desired_hosts_list = [f"{ip} {domain}" for (ip, domain) in desired_hosts.values()]
+    desired_cnames_list = [f"{domain},{target}" for (domain, target) in desired_cnames.values()]
+    
+    # Check if updates are needed
+    hosts_changed = set(current_hosts) != set(desired_hosts_list)
+    cnames_changed = set(current_cnames) != set(desired_cnames_list)
+    
     changes = 0
-    changes += sync_entries(api, current_hosts, desired_hosts, api.delete_host, api.add_host)
-    changes += sync_entries(api, current_cnames, desired_cnames, api.delete_cname, api.add_cname)
+    if hosts_changed:
+        api.update_hosts(desired_hosts_list)
+        changes += abs(len(desired_hosts_list) - len(current_hosts))
+    
+    if cnames_changed:
+        api.update_cnames(desired_cnames_list)
+        changes += abs(len(desired_cnames_list) - len(current_cnames))
     
     if changes > 0:
         logger.info('Synced %d changes to %s', changes, pihole_config['url'])

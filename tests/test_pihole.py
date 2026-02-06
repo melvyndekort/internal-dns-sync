@@ -88,66 +88,66 @@ def test_get_cnames_success(pihole_api):
         assert cnames == ['alias.local,target.local']
 
 
-def test_delete_host_success(pihole_api):
-    """Test successful host deletion"""
+def test_update_hosts_success(pihole_api):
+    """Test successful hosts update"""
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'delete', return_value=mock_response):
-        pihole_api.delete_host('10.0.0.1 test.local')
-        pihole_api.session.delete.assert_called_once()
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+        pihole_api.update_hosts(['10.0.0.1 test.local', '10.0.0.2 test2.local'])
+        pihole_api.session.put.assert_called_once()
 
 
-def test_delete_host_not_found(pihole_api):
-    """Test deleting non-existent host"""
+def test_update_hosts_error(pihole_api):
+    """Test hosts update with error"""
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
-    mock_response.raise_for_status.side_effect = requests.HTTPError("404 Not Found")
+    mock_response.raise_for_status.side_effect = requests.HTTPError("500 Error")
     
-    with patch.object(pihole_api.session, 'delete', return_value=mock_response):
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
         with pytest.raises(requests.HTTPError):
-            pihole_api.delete_host('10.0.0.1 nonexistent.local')
+            pihole_api.update_hosts(['10.0.0.1 test.local'])
 
 
-def test_delete_cname_success(pihole_api):
-    """Test successful CNAME deletion"""
+def test_update_cnames_success(pihole_api):
+    """Test successful CNAMEs update"""
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'delete', return_value=mock_response):
-        pihole_api.delete_cname('alias.local,target.local')
-        pihole_api.session.delete.assert_called_once()
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+        pihole_api.update_cnames(['alias.local,target.local'])
+        pihole_api.session.put.assert_called_once()
 
 
-def test_add_host_success(pihole_api):
-    """Test successful host addition"""
+def test_update_hosts_empty(pihole_api):
+    """Test updating with empty hosts list"""
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'post', return_value=mock_response):
-        pihole_api.add_host('10.0.0.1', 'test.local')
-        pihole_api.session.post.assert_called_once()
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+        pihole_api.update_hosts([])
+        pihole_api.session.put.assert_called_once()
 
 
-def test_add_host_duplicate(pihole_api):
-    """Test adding duplicate host"""
+def test_update_cnames_empty(pihole_api):
+    """Test updating with empty CNAMEs list"""
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
-    mock_response.raise_for_status.side_effect = requests.HTTPError("409 Conflict")
     
-    with patch.object(pihole_api.session, 'post', return_value=mock_response):
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+        pihole_api.update_cnames([])
+        pihole_api.session.put.assert_called_once()
+
+
+def test_update_cnames_error(pihole_api):
+    """Test CNAMEs update with error"""
+    pihole_api.sid = 'test-sid'
+    mock_response = Mock()
+    mock_response.raise_for_status.side_effect = requests.HTTPError("500 Error")
+    
+    with patch.object(pihole_api.session, 'put', return_value=mock_response):
         with pytest.raises(requests.HTTPError):
-            pihole_api.add_host('10.0.0.1', 'test.local')
-
-
-def test_add_cname_success(pihole_api):
-    """Test successful CNAME addition"""
-    pihole_api.sid = 'test-sid'
-    mock_response = Mock()
-    
-    with patch.object(pihole_api.session, 'post', return_value=mock_response):
-        pihole_api.add_cname('alias.local', 'target.local')
-        pihole_api.session.post.assert_called_once()
+            pihole_api.update_cnames(['alias.local,target.local'])
 
 
 def test_base_url_trailing_slash(pihole_api):

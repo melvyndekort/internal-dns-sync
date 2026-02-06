@@ -45,38 +45,20 @@ class PiHoleAPI:
         response.raise_for_status()
         return response.json().get('config', {}).get('dns', {}).get('cnameRecords', [])
     
-    def delete_host(self, entry):
-        logger.info('Deleting host: %s', entry)
-        response = self.session.delete(
-            f'{self.base_url}/api/config/dns/hosts/{requests.utils.quote(entry)}',
-            params={'sid': self.sid}
-        )
-        response.raise_for_status()
-    
-    def delete_cname(self, entry):
-        logger.info('Deleting CNAME: %s', entry)
-        response = self.session.delete(
-            f'{self.base_url}/api/config/dns/cnameRecords/{requests.utils.quote(entry)}',
-            params={'sid': self.sid}
-        )
-        response.raise_for_status()
-    
-    def add_host(self, ip, domain):
-        entry = f'{ip} {domain}'
-        logger.info('Adding host: %s', entry)
-        response = self.session.post(
+    def update_hosts(self, hosts):
+        logger.info('Updating hosts list (%d entries)', len(hosts))
+        response = self.session.put(
             f'{self.base_url}/api/config/dns/hosts',
             params={'sid': self.sid},
-            json={'value': entry}
+            json={'hosts': hosts}
         )
         response.raise_for_status()
     
-    def add_cname(self, domain, target):
-        entry = f'{domain},{target}'
-        logger.info('Adding CNAME: %s', entry)
-        response = self.session.post(
+    def update_cnames(self, cnames):
+        logger.info('Updating CNAME list (%d entries)', len(cnames))
+        response = self.session.put(
             f'{self.base_url}/api/config/dns/cnameRecords',
             params={'sid': self.sid},
-            json={'value': entry}
+            json={'cnameRecords': cnames}
         )
         response.raise_for_status()
