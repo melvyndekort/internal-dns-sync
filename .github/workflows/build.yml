@@ -9,6 +9,7 @@ on:
       - 'Dockerfile'
       - 'internal_dns_sync/**'
       - 'pyproject.toml'
+      - 'uv.lock'
       - '.github/workflows/build.yml'
 
 jobs:
