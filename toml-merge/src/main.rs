@@ -25,8 +25,6 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
-    use tempfile::TempDir;
 
     #[test]
     fn test_merge_preserves_other_settings() {
