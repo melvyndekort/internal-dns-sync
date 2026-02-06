@@ -6,7 +6,6 @@ authors = [{name = "Melvyn de Kort", email = "melvyn@mdekort.nl"}]
 requires-python = ">=3.9"
 dependencies = [
     "requests>=2.32",
-    "tomli>=2.2",
     "PyYAML>=6.0",
 ]
 

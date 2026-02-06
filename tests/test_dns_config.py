@@ -4,20 +4,20 @@ from internal_dns_sync import dns_config
 
 
 def test_load_dns_config():
-    toml_content = """
-[dns]
-hosts = [
-    { ip = "10.0.0.1", domain = "test1.local" },
-    { ip = "10.0.0.2", domain = "test2.local" },
-]
-cnameRecords = [
-    { domain = "alias.local", target = "test1.local" },
-]
+    yaml_content = """
+hosts:
+  - ip: "10.0.0.1"
+    domain: "test1.local"
+  - ip: "10.0.0.2"
+    domain: "test2.local"
+cnames:
+  - domain: "alias.local"
+    target: "test1.local"
 """
     with tempfile.TemporaryDirectory() as tmpdir:
-        config_file = os.path.join(tmpdir, 'dns-config.toml')
+        config_file = os.path.join(tmpdir, 'dns-config.yaml')
         with open(config_file, 'w') as f:
-            f.write(toml_content)
+            f.write(yaml_content)
         
         hosts, cnames = dns_config.load_dns_config(tmpdir)
         

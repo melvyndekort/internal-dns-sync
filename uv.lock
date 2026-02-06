@@ -466,7 +466,6 @@ source = { editable = "." }
 dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
-    { name = "tomli" },
 ]
 
 [package.optional-dependencies]
@@ -485,7 +484,6 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "requests", specifier = ">=2.32" },
-    { name = "tomli", specifier = ">=2.2" },
 ]
 provides-extras = ["dev"]
 
