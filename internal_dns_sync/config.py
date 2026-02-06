@@ -13,6 +13,6 @@ def get_config():
     
     # Set defaults
     cfg.setdefault('repo_url', 'git@github.com:melvyndekort/internal-dns.git')
-    cfg.setdefault('ssh_key', '/root/.ssh/deploy-key')
+    cfg.setdefault('ssh_key', '/config/deploy-key')
     
     return cfg
