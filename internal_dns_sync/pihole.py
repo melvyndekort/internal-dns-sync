@@ -72,7 +72,7 @@ class PiHoleAPI:
         response.raise_for_status()
     
     def add_cname(self, domain, target):
-        entry = f'{domain} {target}'
+        entry = f'{domain},{target}'
         logger.info('Adding CNAME: %s', entry)
         response = self.session.post(
             f'{self.base_url}/api/config/dns/cnameRecords',

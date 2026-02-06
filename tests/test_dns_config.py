@@ -26,4 +26,4 @@ cnames:
         assert hosts['10.0.0.1 test1.local'] == ('10.0.0.1', 'test1.local')
         
         assert len(cnames) == 1
-        assert 'alias.local test1.local' in cnames
+        assert 'alias.local,test1.local' in cnames

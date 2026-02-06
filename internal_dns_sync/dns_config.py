@@ -17,6 +17,6 @@ def load_dns_config(repo_dir):
     
     cnames = {}
     for entry in data.get('cnames', []):
-        cnames[f"{entry['domain']} {entry['target']}"] = (entry['domain'], entry['target'])
+        cnames[f"{entry['domain']},{entry['target']}"] = (entry['domain'], entry['target'])
     
     return hosts, cnames
