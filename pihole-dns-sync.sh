@@ -23,8 +23,10 @@ cd "$REPO_DIR"
 
 echo "Deploying DNS entries to pihole.toml..."
 
-# Backup current config
-cp "$PIHOLE_TOML" "$PIHOLE_TOML.backup.$(date +%Y%m%d-%H%M%S)"
+# Backup current config if it exists
+if [ -f "$PIHOLE_TOML" ]; then
+    cp "$PIHOLE_TOML" "$PIHOLE_TOML.backup.$(date +%Y%m%d-%H%M%S)"
+fi
 
 # Use Rust toml-merge to update DNS entries while preserving comments
 toml-merge
