@@ -3,8 +3,8 @@ set -e
 
 REPO_DIR="/var/lib/internal-dns"
 REPO_URL="git@github.com:melvyndekort/internal-dns.git"
-DNS_FILE="custom-dns.list"
-PIHOLE_DNS="/etc/pihole/hosts/custom.list"
+DNS_CONFIG="dns-config.toml"
+PIHOLE_TOML="/etc/pihole/pihole.toml"
 SSH_KEY="/root/.ssh/deploy-key"
 
 export GIT_SSH_COMMAND="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
@@ -21,15 +21,12 @@ fi
 
 cd "$REPO_DIR"
 
-# Always copy the file
-echo "Deploying DNS entries..."
+echo "Deploying DNS entries to pihole.toml..."
 
-# Backup current DNS
-if [ -f "$PIHOLE_DNS" ]; then
-    cp "$PIHOLE_DNS" "$PIHOLE_DNS.backup.$(date +%Y%m%d-%H%M%S)"
-fi
+# Backup current config
+cp "$PIHOLE_TOML" "$PIHOLE_TOML.backup.$(date +%Y%m%d-%H%M%S)"
 
-# Copy new DNS entries
-cp "$DNS_FILE" "$PIHOLE_DNS"
+# Use Rust toml-merge to update DNS entries while preserving comments
+toml-merge
 
-echo "DNS entries updated - PiHole will reload automatically"
+echo "DNS entries updated in pihole.toml - PiHole will reload automatically"
