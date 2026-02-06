@@ -47,18 +47,16 @@ class PiHoleAPI:
     
     def update_hosts(self, hosts):
         logger.info('Updating hosts list (%d entries)', len(hosts))
-        response = self.session.put(
-            f'{self.base_url}/api/config/dns/hosts',
-            params={'sid': self.sid},
-            json={'hosts': hosts}
+        response = self.session.patch(
+            f'{self.base_url}/api/config/dns',
+            json={'config': {'dns': {'hosts': hosts}}}
         )
         response.raise_for_status()
     
     def update_cnames(self, cnames):
         logger.info('Updating CNAME list (%d entries)', len(cnames))
-        response = self.session.put(
-            f'{self.base_url}/api/config/dns/cnameRecords',
-            params={'sid': self.sid},
-            json={'cnameRecords': cnames}
+        response = self.session.patch(
+            f'{self.base_url}/api/config/dns',
+            json={'config': {'dns': {'cnameRecords': cnames}}}
         )
         response.raise_for_status()

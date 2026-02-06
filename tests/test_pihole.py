@@ -93,9 +93,9 @@ def test_update_hosts_success(pihole_api):
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         pihole_api.update_hosts(['10.0.0.1 test.local', '10.0.0.2 test2.local'])
-        pihole_api.session.put.assert_called_once()
+        pihole_api.session.patch.assert_called_once()
 
 
 def test_update_hosts_error(pihole_api):
@@ -104,7 +104,7 @@ def test_update_hosts_error(pihole_api):
     mock_response = Mock()
     mock_response.raise_for_status.side_effect = requests.HTTPError("500 Error")
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         with pytest.raises(requests.HTTPError):
             pihole_api.update_hosts(['10.0.0.1 test.local'])
 
@@ -114,9 +114,9 @@ def test_update_cnames_success(pihole_api):
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         pihole_api.update_cnames(['alias.local,target.local'])
-        pihole_api.session.put.assert_called_once()
+        pihole_api.session.patch.assert_called_once()
 
 
 def test_update_hosts_empty(pihole_api):
@@ -124,9 +124,9 @@ def test_update_hosts_empty(pihole_api):
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         pihole_api.update_hosts([])
-        pihole_api.session.put.assert_called_once()
+        pihole_api.session.patch.assert_called_once()
 
 
 def test_update_cnames_empty(pihole_api):
@@ -134,9 +134,9 @@ def test_update_cnames_empty(pihole_api):
     pihole_api.sid = 'test-sid'
     mock_response = Mock()
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         pihole_api.update_cnames([])
-        pihole_api.session.put.assert_called_once()
+        pihole_api.session.patch.assert_called_once()
 
 
 def test_update_cnames_error(pihole_api):
@@ -145,7 +145,7 @@ def test_update_cnames_error(pihole_api):
     mock_response = Mock()
     mock_response.raise_for_status.side_effect = requests.HTTPError("500 Error")
     
-    with patch.object(pihole_api.session, 'put', return_value=mock_response):
+    with patch.object(pihole_api.session, 'patch', return_value=mock_response):
         with pytest.raises(requests.HTTPError):
             pihole_api.update_cnames(['alias.local,target.local'])
 
