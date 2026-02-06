@@ -1,14 +1,27 @@
 [Unit]
 Description=Internal DNS Sync
-After=network-online.target pihole.service
+Documentation=https://github.com/melvyndekort/internal-dns-sync
 Wants=network-online.target
+After=network-online.target pihole.service
+RequiresMountsFor=%t/containers
 
 [Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
 Type=oneshot
-ExecStart=/usr/bin/podman run --rm \
+ExecStartPre=/bin/rm -f %t/%n.ctr-id
+ExecStart=/usr/bin/podman run \
+  --cidfile=%t/%n.ctr-id \
+  --cgroups=no-conmon \
+  --rm \
+  --sdnotify=conmon \
+  --replace \
+  --pull=newer \
+  --name=internal-dns-sync \
   -v /var/containers/pihole/hosts:/etc/pihole/hosts:Z \
   -v /root/.ssh/pihole-1-deploy-key:/root/.ssh/deploy-key:ro,Z \
+  --label io.containers.autoupdate=registry \
   ghcr.io/melvyndekort/internal-dns-sync:latest
+ExecStopPost=/usr/bin/podman rm -f --ignore -t 10 --cidfile=%t/%n.ctr-id
 
 [Install]
 WantedBy=multi-user.target
