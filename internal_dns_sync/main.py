@@ -46,7 +46,7 @@ def main():
     
     repo_dir = git.clone_or_update(cfg['repo_url'], cfg['ssh_key'])
     
-    desired_hosts, desired_cnames = dns_config.load_dns_config(repo_dir)
+    desired_hosts, desired_cnames = dns_config.load_dns_config(repo_dir, cfg['dns_config_path'])
     
     total_changes = 0
     for pihole_config in cfg['piholes']:

@@ -4,8 +4,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def load_dns_config(repo_dir):
-    config_file = f'{repo_dir}/dns-config.yaml'
+def load_dns_config(repo_dir, dns_config_path='dns-config.yaml'):
+    config_file = f'{repo_dir}/{dns_config_path}'
     logger.info('Loading DNS config from %s', config_file)
     
     with open(config_file, 'r', encoding='utf-8') as f:
