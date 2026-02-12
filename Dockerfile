@@ -1,4 +1,4 @@
-FROM python:3.15.0a5-alpine3.22 AS base
+FROM python:3.15.0a6-alpine3.22 AS base
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -17,7 +17,7 @@ COPY internal_dns_sync/ ./internal_dns_sync/
 RUN uv build --wheel && pip install dist/*.whl
 
 
-FROM python:3.15.0a5-alpine3.22 AS runtime
+FROM python:3.15.0a6-alpine3.22 AS runtime
 
 LABEL org.opencontainers.image.source=https://github.com/melvyndekort/internal-dns-sync
 
