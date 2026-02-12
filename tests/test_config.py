@@ -24,7 +24,9 @@ piholes:
         assert len(cfg['piholes']) == 2
         assert cfg['piholes'][0]['url'] == 'http://test1'
         assert cfg['piholes'][0]['password'] == 'pass1'
-        assert cfg['repo_url'] == 'git@github.com:melvyndekort/internal-dns.git'
+        assert cfg['repo_url'] == 'git@github.com:melvyndekort/homelab.git'
+        assert cfg['ssh_key'] == '/ssh-key'
+        assert cfg['dns_config_path'] == 'dns/dns-config.yaml'
     finally:
         os.unlink(config_file)
         if 'CONFIG' in os.environ:
@@ -32,11 +34,13 @@ piholes:
 
 
 def test_get_config_missing_file():
-    """Test config file not found"""
+    """Test config file not found - should use defaults"""
     os.environ['CONFIG'] = '/nonexistent/config.yml'
     try:
-        with pytest.raises(FileNotFoundError):
-            config.get_config()
+        cfg = config.get_config()
+        assert cfg['repo_url'] == 'git@github.com:melvyndekort/homelab.git'
+        assert cfg['ssh_key'] == '/ssh-key'
+        assert cfg['piholes'] == []
     finally:
         if 'CONFIG' in os.environ:
             del os.environ['CONFIG']
@@ -75,8 +79,10 @@ def test_get_config_empty_file():
         cfg = config.get_config()
         # Empty YAML returns None, but we add defaults
         assert cfg == {
-            'repo_url': 'git@github.com:melvyndekort/internal-dns.git',
-            'ssh_key': '/config/deploy-key'
+            'repo_url': 'git@github.com:melvyndekort/homelab.git',
+            'ssh_key': '/ssh-key',
+            'dns_config_path': 'dns/dns-config.yaml',
+            'piholes': []
         }
     finally:
         os.unlink(config_file)
@@ -96,7 +102,7 @@ repo_url: git@github.com:test/repo.git
     try:
         os.environ['CONFIG'] = config_file
         cfg = config.get_config()
-        assert 'piholes' not in cfg or cfg.get('piholes') is None
+        assert cfg.get('piholes') == []
     finally:
         os.unlink(config_file)
         if 'CONFIG' in os.environ:
