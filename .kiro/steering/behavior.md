@@ -17,7 +17,7 @@ Syncs internal DNS entries from a YAML config to PiHole servers via the PiHole v
 - `deployment/` — Deployment configuration
 - `config.example.yml` — Example configuration
 - `Dockerfile` — Multi-stage Alpine build (includes git + openssh-client)
-- `Makefile` — `install`, `test`, `lint` (pylint), `build`, `full-build`, `run`
+- `Makefile` — `install`, `test`, `lint`, `format` (pylint), `build`, `full-build`, `run`
 
 ## Deployment
 
