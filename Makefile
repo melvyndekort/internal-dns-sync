@@ -29,3 +29,7 @@ pylint: lint
 
 run: install
 	@uv run python3 -m internal_dns_sync.main
+
+format: install
+	@uv run ruff format .
+	@uv run ruff check --fix .
