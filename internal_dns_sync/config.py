@@ -1,14 +1,18 @@
-import os
-import yaml
+"""Load configuration from a config file and/or environment variables."""
+
 import logging
+import os
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
 
 def get_config():
+    """Return the merged config: file values (if present) filled in with env var defaults."""
     # Try config file first (backward compatibility)
     config_file = os.getenv('CONFIG', '/config/config.yml')
-    
+
     if os.path.exists(config_file):
         with open(config_file, 'r', encoding='utf-8') as f:
             cfg = yaml.safe_load(f)
@@ -16,17 +20,17 @@ def get_config():
             cfg = {}
     else:
         cfg = {}
-    
+
     # Set defaults
     cfg.setdefault('repo_url', os.getenv('REPO_URL', 'git@github.com:melvyndekort/homelab.git'))
     cfg.setdefault('ssh_key', os.getenv('SSH_KEY', '/ssh-key'))
     cfg.setdefault('dns_config_path', os.getenv('DNS_CONFIG_PATH', 'dns/dns-config.yaml'))
-    
+
     # Parse PiHole configs from env vars if not in file
     if 'piholes' not in cfg:
         pihole_urls = os.getenv('PIHOLE_URLS', '').split(',')
         pihole_passwords = os.getenv('PIHOLE_PASSWORDS', '').split(',')
-        
+
         if pihole_urls and pihole_urls[0]:
             cfg['piholes'] = [
                 {'url': url.strip(), 'password': pwd.strip()}
@@ -34,5 +38,5 @@ def get_config():
             ]
         else:
             cfg['piholes'] = []
-    
+
     return cfg

@@ -1,18 +1,24 @@
-import requests
+"""PiHole v6 API client."""
+
 import logging
+
+import requests
 
 logger = logging.getLogger(__name__)
 
 
 class PiHoleAPI:
+    """Session-based client for PiHole's v6 REST API."""
+
     def __init__(self, base_url, password):
         self.base_url = base_url.rstrip('/')
         self.password = password
         self.session = requests.Session()
         self.sid = None
         self.csrf = None
-    
+
     def authenticate(self):
+        """Log in and store the session/CSRF tokens for subsequent requests."""
         logger.info('Authenticating with PiHole API')
         response = self.session.post(
             f'{self.base_url}/api/auth',
@@ -26,8 +32,9 @@ class PiHoleAPI:
             'X-FTL-SID': self.sid,
             'X-FTL-CSRF': self.csrf
         })
-    
+
     def get_hosts(self):
+        """Return the current list of DNS host entries."""
         logger.info('Fetching current DNS hosts')
         response = self.session.get(
             f'{self.base_url}/api/config/dns/hosts',
@@ -35,8 +42,9 @@ class PiHoleAPI:
         )
         response.raise_for_status()
         return response.json().get('config', {}).get('dns', {}).get('hosts', [])
-    
+
     def get_cnames(self):
+        """Return the current list of DNS CNAME entries."""
         logger.info('Fetching current DNS CNAMEs')
         response = self.session.get(
             f'{self.base_url}/api/config/dns/cnameRecords',
@@ -44,16 +52,18 @@ class PiHoleAPI:
         )
         response.raise_for_status()
         return response.json().get('config', {}).get('dns', {}).get('cnameRecords', [])
-    
+
     def update_hosts(self, hosts):
+        """Replace the DNS host entries with the given list."""
         logger.info('Updating hosts list (%d entries)', len(hosts))
         response = self.session.patch(
             f'{self.base_url}/api/config/dns',
             json={'config': {'dns': {'hosts': hosts}}}
         )
         response.raise_for_status()
-    
+
     def update_cnames(self, cnames):
+        """Replace the DNS CNAME entries with the given list."""
         logger.info('Updating CNAME list (%d entries)', len(cnames))
         response = self.session.patch(
             f'{self.base_url}/api/config/dns',
